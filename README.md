@@ -2,7 +2,7 @@
 
 本书用于记录作者学习使用数据库之间发生的故事。
 
-本书基于 mdbook 编写，已部署至 https://17999824wyj.github.io/db_learn/。
+本书基于 mdbook 编写，已部署至 [https://17999824wyj.github.io/db_learn/](https://17999824wyj.github.io/db_learn/)。
 
 ## 文档本地使用方法
 
