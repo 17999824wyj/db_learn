@@ -1,0 +1,6 @@
+[book]
+authors = ["wangyijia"]
+language = "zh"
+multilingual = false
+src = "src"
+title = "KingBase单机部署指南(非官方版)"
