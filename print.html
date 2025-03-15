@@ -391,12 +391,9 @@
 <p>然后，回到 Navicat，重新点击 <code>测试连接</code>，如果连接成功，则可以正常连接金仓数据库。</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="数据加载"><a class="header" href="#数据加载">数据加载</a></h1>
 <p>本部分将介绍如何将<strong>课程资料包</strong>内的数据加载到金仓数据库中。若无课程资料包，请自行获取。作者无权也不会提供课程资料包。</p>
-<h1 id="数据加载-1"><a class="header" href="#数据加载-1">数据加载</a></h1>
-<p>本节内容将指导您如何将课程资料包中的数据导入金仓数据库。若您未持有课程资料包，请自行准备相应的数据资源。</p>
 <h2 id="本节目录-3"><a class="header" href="#本节目录-3">本节目录</a></h2>
 <ul>
-<li><a href="data-load.html#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD">数据加载</a></li>
-<li><a href="data-load.html#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD-1">数据加载</a>
+<li><a href="data-load.html#%E6%95%B0%E6%8D%AE%E5%8A%A0%E8%BD%BD">数据加载</a>
 <ul>
 <li><a href="data-load.html#%E6%9C%AC%E8%8A%82%E7%9B%AE%E5%BD%95">本节目录</a></li>
 <li><a href="data-load.html#%E8%83%8C%E6%99%AF%E7%9F%A5%E8%AF%86%E7%AE%80%E4%BB%8B">背景知识简介</a>
@@ -474,7 +471,34 @@
 <p>TODO</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="q--a"><a class="header" href="#q--a">Q &amp; A</a></h1>
 <p>暂无需要特殊说明的内容</p>
-<div style="break-before: page; page-break-before: always;"></div><h1 id="附录-a"><a class="header" href="#附录-a">附录 A</a></h1>
+<div style="break-before: page; page-break-before: always;"></div><h1 id="附录-a对-dmp-文件的探索"><a class="header" href="#附录-a对-dmp-文件的探索">附录 A：对 .dmp 文件的探索</a></h1>
+<p>可能有些同学发现，在课程资料包的 <code>Seamart数据集</code> 目录内，有一个名为 <code>seamart.dmp</code> 的文件。这个东西是什么呢？</p>
+<h2 id="某些定义下的-dmp"><a class="header" href="#某些定义下的-dmp">某些定义下的 .dmp</a></h2>
+<p>直接问 bing，得到很多解释，都说是 <code>.dmp 文件</code> 是 windows 系统下的转储文件，用于记录系统崩溃时的内存信息，便于系统管理员进行故障排查。</p>
+<p>那问题来了，windows 系统下的转储文件，为什么放在了数据集内呢？</p>
+<h2 id="根据程序名猜测"><a class="header" href="#根据程序名猜测">根据程序名猜测</a></h2>
+<p>观察 <code>Server/bin</code> 目录下的内容，发现有一个可执行文件，叫做 <code>sys_dump.exe</code>，从名字上看，这个程序可能应该是用来生成 <code>.dmp</code> 文件的。</p>
+<p>官网查这个程序，发现它是一个用来进行数据库备份的程序，那么可以猜测，<code>seamart.dmp</code> 文件就是 <code>sys_dump.exe</code> 程序生成的数据库备份文件。</p>
+<h2 id="确认"><a class="header" href="#确认">确认</a></h2>
+<p>在官网上了解到，<code>sys_restore.exe</code> 是金仓提供的用来恢复数据库的程序，那么就使用此程序，加载 <code>seamart.dmp</code> 文件，看看是否能够成功恢复数据库。</p>
+<p>经过验证，确实能够恢复部分数据，但过程中会产生大量的报错...</p>
+<h2 id="现存问题"><a class="header" href="#现存问题">现存问题</a></h2>
+<p>恢复过程中会出现大量的报错，不知道是不是导致了恢复失败。</p>
+<h2 id="进一步猜测"><a class="header" href="#进一步猜测">进一步猜测</a></h2>
+<p>这个是后续我的思考：</p>
+<p>观察 <code>Server/bin</code> 的内容，发现有一个 <code>sys_dumpall.exe</code> 的东西，猜测这个程序应该也是用来生成 <code>.dmp</code> 文件的。那么这就让人意识到一个问题，<code>sys_dump.exe</code> 和 <code>sys_dumpall.exe</code> 生成的 <code>.dmp</code> 文件，可能是不一样的。</p>
+<ol>
+<li>观察不用 dmp 文件，而是直接用 <code>seamart.sql</code> 恢复的数据库，发现其结构和内置的 <code>test</code> 数据库和 <code>kingbase</code> 数据库的结构类似，所以有一个疑问：
+<ul>
+<li>是不是 <code>sys_dump.exe</code> 是用来备份 <code>结构+数据</code> 的，而 <code>sys_dumpall.exe</code> 是用来备份某些特定数据库的 <code>结构+数据+该数据库的系统配置</code> 的？</li>
+</ul>
+</li>
+<li>如果说该问题成立，那么可能是 <code>在导出数据时</code>，使用的程序问题，导致的恢复过程中一大堆报错。这个问题可能不是我们得到资料包的人能够解决的</li>
+<li>如果该问题不成立，那么可能还是 <code>在导入数据时</code>，使用的程序问题，导致的恢复过程中一大堆报错。那么就说明可能是我的操作方法不对，但是懒得验证了，毕竟验证一次挺麻烦的，需要 <code>删掉数据库 -&gt; 重新导入数据(5min以上) -&gt; 观察日志继续推测 -&gt; 迭代...</code>。一套流程下来估计得快 10min 了。</li>
+</ol>
+<h2 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h2>
+<p>希望有其它大佬能够给出解决方案，或者给出一些猜测吧。</p>
+<p>毕竟对金仓还是很不熟的，不敢妄下断言，只能说有所猜测吧。</p>
 
                     </main>
 
