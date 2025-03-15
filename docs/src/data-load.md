@@ -65,7 +65,7 @@ PostgreSQL 是一款功能强大的开源分析型数据库，金仓数据库与
 
 ## 完成标志
 
-使用 `Navicat` 连接 `kingbase`，能够在其内看到 `seamart` 数据库，打开后发现其内存在 `sales` 表，如：
+使用 `Navicat` 连接 `kingbase`，能够在其内看到 `seamart` 数据库，打开后发现其中存在着 `sales` 表，如：
 
 ![](./imgs/data_load/finish.png)
 
