@@ -26,6 +26,10 @@
 
 欢迎给本项目以及其它项目点 star
 
+## 近期更新内容
+
+- 2025-03-15: 更新了 QA 章节，增加了问题："如何在 Navicat 里看 ER 图？"
+
 ## 目录
 
 - [前言](./foreword.md)
@@ -34,4 +38,5 @@
 - [连接数据库](./connect-db.md)
 - [数据加载](./data-load.md)
 - [数据迁移](./data-migration.md)
-- [后记](./afterword.md)
+- [Q & A](./qa.md)
+- [附录 A：对 .dmp 文件的探索](./appendix-a.md)
