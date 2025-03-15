@@ -6,4 +6,5 @@
 - [连接数据库](./connect-db.md)
 - [数据加载](./data-load.md)
 - [数据迁移](./data-migration.md)
-- [后记](./afterword.md)
+- [Q & A](./qa.md)
+- [附录 A](./appendix-a.md)
