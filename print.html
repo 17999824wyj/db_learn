@@ -174,6 +174,10 @@
 <li>gitcode: <a href="">https://gitcode.com/abcd1234-wyj</a></li>
 </ul>
 <p>欢迎给本项目以及其它项目点 star</p>
+<h2 id="近期更新内容"><a class="header" href="#近期更新内容">近期更新内容</a></h2>
+<ul>
+<li>2025-03-15: 更新了 QA 章节，增加了问题："如何在 Navicat 里看 ER 图？"</li>
+</ul>
 <h2 id="目录"><a class="header" href="#目录">目录</a></h2>
 <ul>
 <li><a href="./foreword.html">前言</a></li>
@@ -182,7 +186,8 @@
 <li><a href="./connect-db.html">连接数据库</a></li>
 <li><a href="./data-load.html">数据加载</a></li>
 <li><a href="./data-migration.html">数据迁移</a></li>
-<li><a href="./afterword.html">后记</a></li>
+<li><a href="./qa.html">Q &amp; A</a></li>
+<li><a href="./appendix-a.html">附录 A：对 .dmp 文件的探索</a></li>
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="环境准备---数据库连接工具"><a class="header" href="#环境准备---数据库连接工具">环境准备 - 数据库连接工具</a></h1>
 <p>在现代化的软件开发和维护过程中，数据库扮演着至关重要的角色。为了更高效、更安全地管理和操作数据库，我们通常不会直接在数据库服务器上执行命令，而是通过专业的数据库连接工具来进行。这些工具提供了友好的用户界面、便捷的操作方式以及强大的功能支持。</p>
@@ -468,9 +473,186 @@
 </ul>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="数据迁移"><a class="header" href="#数据迁移">数据迁移</a></h1>
 <p>本部分预计记录将金仓里的数据迁移至 MySQL 的流程。</p>
-<p>TODO</p>
+<h2 id="本节目录-4"><a class="header" href="#本节目录-4">本节目录</a></h2>
+<ul>
+<li><a href="data-migration.html#%E6%95%B0%E6%8D%AE%E8%BF%81%E7%A7%BB">数据迁移</a>
+<ul>
+<li><a href="data-migration.html#%E6%9C%AC%E8%8A%82%E7%9B%AE%E5%BD%95">本节目录</a></li>
+<li><a href="data-migration.html#%E5%A4%A7%E4%BD%93%E6%B5%81%E7%A8%8B%E4%BB%8B%E7%BB%8D">大体流程介绍</a></li>
+<li><a href="data-migration.html#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%87%BA">数据导出</a>
+<ul>
+<li><a href="data-migration.html#%E8%83%8C%E6%99%AF">背景</a></li>
+<li><a href="data-migration.html#navicat-%E5%AF%BC%E5%87%BA%E6%B5%81%E7%A8%8B">Navicat 导出流程</a></li>
+</ul>
+</li>
+<li><a href="data-migration.html#%E9%80%82%E9%85%8D%E6%80%A7%E4%BF%AE%E6%94%B9">适配性修改</a>
+<ul>
+<li><a href="data-migration.html#1-%E4%BF%AE%E6%94%B9%E5%88%97%E5%90%8D%E5%92%8C%E8%A1%A8%E5%90%8D">1. 修改列名和表名</a></li>
+<li><a href="data-migration.html#2-%E4%B8%BA-ddlsql-%E5%81%9A%E9%80%82%E9%85%8D">2. 为 DDL.sql 做适配</a></li>
+<li><a href="data-migration.html#3-%E8%A7%A3%E5%86%B3-json-%E9%97%AE%E9%A2%98">3. 解决 json 问题</a></li>
+<li><a href="data-migration.html#4-%E8%B0%83%E6%95%B4%E8%A7%86%E5%9B%BE">4. 调整视图</a></li>
+</ul>
+</li>
+<li><a href="data-migration.html#%E6%95%B0%E6%8D%AE%E5%AF%BC%E5%85%A5">数据导入</a></li>
+<li><a href="data-migration.html#%E9%AA%8C%E8%AF%81">验证</a></li>
+<li><a href="data-migration.html#%E7%8E%B0%E5%AD%98%E9%97%AE%E9%A2%98">现存问题</a>
+<ul>
+<li><a href="data-migration.html#%E9%97%AE%E9%A2%98-i">问题 I</a></li>
+<li><a href="data-migration.html#%E9%97%AE%E9%A2%98-i-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">问题 I 解决方案</a></li>
+<li><a href="data-migration.html#%E9%97%AE%E9%A2%98-ii">问题 II</a></li>
+<li><a href="data-migration.html#%E9%97%AE%E9%A2%98-ii-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">问题 II 解决方案</a></li>
+<li><a href="data-migration.html#%E9%97%AE%E9%A2%98-iii">问题 III</a></li>
+<li><a href="data-migration.html#%E9%97%AE%E9%A2%98-iii-%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88">问题 III 解决方案</a></li>
+</ul>
+</li>
+<li><a href="data-migration.html#%E5%BC%BA%E8%B0%83%E9%A1%B9">强调项</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="大体流程介绍"><a class="header" href="#大体流程介绍">大体流程介绍</a></h2>
+<p>由于我们完成了将数据导入金仓数据库的部分，所以，下面的问题就演变成了，我们要把数据从金仓数据库迁移至 MySQL 数据库。</p>
+<p>数据迁移的大体流程就是，先将数据导出成 sql 脚本，再使用目标数据库的 sql 引擎执行 sql 脚本，以此实现导入。</p>
+<p>但由于数据库之间的差异，我们需要对 sql 脚本进行一些适配性修改，以使其能在 MySQL 中正常运行。</p>
+<p>所以，虽然此节顺序是 <code>导出 -&gt; 修改 -&gt; 导入</code>，但实际我的操作过程中是 <code>导出 -&gt; 开始迭代 -&gt; 导入 -&gt; 报错后并修改 -&gt; 删掉数据库</code>。</p>
+<h2 id="数据导出"><a class="header" href="#数据导出">数据导出</a></h2>
+<h3 id="背景"><a class="header" href="#背景">背景</a></h3>
+<p>金仓数据库提供了导出工具，但是，我们课程资料包里的数据是哪来的？估计就是用这个工具导出来的。而这个工具导出出来的 sql 脚本是不能被直接执行的，原因是导出的 sql 是基于金仓的 sql 引擎的，而我们的目标数据库是 MySQL，所以，我们需要对导出的 sql 脚本进行一些修改。</p>
+<p>而由于数据量过大，如果直接对此脚本进行修改的话，工作量太大，所以选择通过数据库连接工具提供的导出方式进行导出。</p>
+<h3 id="navicat-导出流程"><a class="header" href="#navicat-导出流程">Navicat 导出流程</a></h3>
+<ol>
+<li>右键要导出的数据库，选择 <code>导出向导</code>：
+<ul>
+<li><img src="./imgs/data_trans/export_guide.png" alt="" /></li>
+</ul>
+</li>
+<li>选择导出类型为 <code>SQL 文件</code>，然后点击 <code>下一步</code>，之后我们点击左下角的 <code>全选</code>，然后再点击 <code>全选</code> 旁边的 <code>下拉按钮</code>，选择 <code>导出已选择的到相同文件</code>(<strong>图里面的是还没点击 <code>导出已选择的到相同文件</code> 的样子</strong>)：
+<img src="./imgs/data_trans/select_all.png" alt="" /></li>
+<li>然后继续点击下一步，最后点击<code>开始</code>:
+<img src="./imgs/data_trans/start.png" alt="" /></li>
+</ol>
+<h2 id="适配性修改"><a class="header" href="#适配性修改">适配性修改</a></h2>
+<p><strong>PS：这部分，如果有课程资料包，则不需要再做，这部分是记录了我的操作过程。</strong></p>
+<h3 id="1-修改列名和表名"><a class="header" href="#1-修改列名和表名">1. 修改列名和表名</a></h3>
+<p>我导出的 sql 脚本，起的名字是 <code>all.sql</code>，观察直接导出的内容，可以发现大体形如：</p>
+<pre><code class="language-sql">INSERT INTO "adminaddrs" ("addrid", "stdcode", "addrname", "parentid", "currlevel") VALUES ("1", NULL, "阿富汗", 1, 0);
+/* ... 其他的内容省略了 ... */
+</code></pre>
+<p>熟悉 mysql 的同学应该知道，mysql 的表名和列名在使用时是<strong>不能</strong>用双引号的，所以，我们需要将所有的双引号替换成 <code>反引号</code>(电脑键盘左上角的 Esc 下面) 。</p>
+<p>在这一步，我是使用的 vscode 的替换来做的，这也为下面的一个问题的产生，带来了隐患。</p>
+<h3 id="2-为-ddlsql-做适配"><a class="header" href="#2-为-ddlsql-做适配">2. 为 DDL.sql 做适配</a></h3>
+<p>当直接执行我们修改完的数据脚本时，会报错，报错日志说 <code>找不到数据库</code>，那显而易见，我们还没有创建数据库，所以，我们需要先创建数据库，再执行脚本。那我们就需要先运行我们之前用的 <code>DDL.sql</code> 脚本。</p>
+<p>当直接执行 DDL.sql 时，会报错，经过分析，因为金仓作为分析型数据库，其变量类型和 MySQL 的变量类型不同，所以需要做一大批的修改，如下所
+示：</p>
+<ul>
+<li>@Diff:</li>
+<li>
+<ol>
+<li>MySQL 的 <code>schema</code> 与 <code>database</code> 相同含意, 故删除了原先对 数据库 的定义，最后效果是保留了 <code>schema (sales)</code></li>
+</ol>
+</li>
+<li>
+<ol start="2">
+<li>MySQL 不支持 <code>INTERVAL</code> 类型, 故将该字段改为 <code>CHAR(16)</code> 类型以适配 <code>ISO 8601</code> 格式</li>
+</ol>
+</li>
+<li>
+<ol start="3">
+<li>MySQL 无 <code>NUMERIC</code> 类型, 故将此种类型改为 <code>DECIMAL</code> 类型</li>
+</ol>
+</li>
+<li>
+<ol start="4">
+<li>MySQL 无 <code>MONEY</code> 类型, 原先尝试也改为 <code>DECIMAL</code> 类型, 但后来发现此项会产生类似 <code>$16.30</code>, 故改为 <code>VARCHAR(16)</code> 类型</li>
+</ol>
+</li>
+<li>
+<ol start="5">
+<li>MySQL 的 <code>TIMESTAMP</code> 不对应于时区, 故将原始的 <code>TIMESTAMP WITH TIME ZONE</code> 类型改为 <code>TIMESTAMP</code> 类型</li>
+</ol>
+</li>
+<li>
+<ol start="6">
+<li>MySQL 不支持 <code>[1199,2397)</code> 这种 <code>INT8RANGE</code> 类型, 故将 <code>INT8RANGE</code> 类型改为 <code>VARCHAR(16)</code> 类型</li>
+</ol>
+</li>
+</ul>
+<p>最后，修改完的此脚本，被命名为 <code>DDL_my.sql</code>，但也带来了一系列问题，后续会提到。</p>
+<h3 id="3-解决-json-问题"><a class="header" href="#3-解决-json-问题">3. 解决 json 问题</a></h3>
+<p>这个问题出现的根本原因是我不知道 mysql 还能插入 json 数据...</p>
+<p>直接原因是：由于在 解决问题 1 时，我直接用的 vscode 的替换功能，导致 json 数据里的双引号也被替换了，所以，我们需要将 json 数据里的双引号替换回来。</p>
+<p>在 vscode 里搜索 {` 这个符号，就能找到被异常替换掉的 json 数据，然后手动把反引号替换回双引号(英文版)即可。</p>
+<h3 id="4-调整视图"><a class="header" href="#4-调整视图">4. 调整视图</a></h3>
+<p>在 Navicat 导出的内容里，存在对金仓数据库里视图数据的导出，但是视图在 mysql 是不允许插入数据的，所以，我们需要删除这些视图的插入数据部分。</p>
+<p>也就是说，我们需要移除最后的四个视图的插入数据，而是改成只视图定义部分。</p>
+<p>但由于 MONEY 类型的问题，导致在 mysql 的视图定义部分涉及到的计算，我不会写了，所以这就导致视图是存在问题的。希望有大佬能够解决吧...</p>
+<h2 id="数据导入"><a class="header" href="#数据导入">数据导入</a></h2>
+<ol>
+<li>Navicat 右键想要导入的<strong>连接</strong>，选择 <code>运行SQL文件</code>：</li>
+<li>选择我们修改后的 <code>DDL_my.sql</code> 文件，然后点击 <code>开始</code>：
+<img src="./imgs/data_trans/import_guide.png" alt="" /></li>
+<li>然后再关掉连接，重新开启连接(刷新)，选择我们运行了 <code>DDL_my.sql</code> 后新建的数据库，再选择 <code>运行SQL文件</code>，选择我们修改后的 <code>all.sql</code> 文件，然后点击 <code>开始</code>，配置推荐，关闭 <code>错误后继续执行</code> 和 <code>一次运行多个</code>(毕竟是在调试嘛，如果用封装好的肯定就无所谓了)：
+<img src="./imgs/data_trans/import_for_sales.png" alt="" /></li>
+<li>等待运行完成，即可完毕。</li>
+</ol>
+<h2 id="验证"><a class="header" href="#验证">验证</a></h2>
+<p>使用 Navicat 打开 mysql 数据库，核对数据数量、数据内容，发现相同，则认为数据迁移成功。</p>
+<p>如下图：</p>
+<p><img src="./imgs/data_trans/verify.png" alt="" /></p>
+<p><strong>PS：虽然行数看起来对不上，但打开表格后，发现数据量是相同的(以 adminaddrs 为例，都是 664 页 277 行，每页 1000 行)，所以，可以认为数据迁移成功。</strong></p>
+<h2 id="现存问题"><a class="header" href="#现存问题">现存问题</a></h2>
+<h3 id="问题-i"><a class="header" href="#问题-i">问题 I</a></h3>
+<p>视图(View) 因为 金仓 的特殊性 (金仓有 MONEY 类型, 该类型的数据示例："$1.00", 在 mysql 里, 我采用 "VARCHAR(16)" 来代替), 这使得如下列出的两张视图(建立这两张视图的 sql 脚本位于 all.sql 的末尾部分)：</p>
+<ul>
+<li>shop_orders</li>
+<li>shopstat</li>
+</ul>
+<p>这两张视图的数据存在问题, 具体问题在于：</p>
+<ul>
+<li>shop_orders: 其最后一列(列名为 good_bal)存在问题, 直接原因是建立视图的时候, 对金额的计算公式写的不对, 根本原因如上所示。</li>
+<li>shopstat: 其最后一列 totalprice 也涉及金融计算, 导致数据异常</li>
+</ul>
+<p>且发现：
+shop_orders 里的数据也多两行
+shopstat 里的数据多两行
+但我看了其它的表格里的数据数量, 都是相同的... 这就有点疑惑...</p>
+<p>金仓里的视图的数据被放置在了 <code>send/kingbase/</code> 内的 2 个 sql 文件里, 那 2 个 sql 中的内容即是金仓里的视图定义后, 显示出来的正确数据。</p>
+<h3 id="问题-i-解决方案"><a class="header" href="#问题-i-解决方案">问题 I 解决方案</a></h3>
+<p>通过调整 View 的定义(但是我不太会...), 修正金额计算的部分, 使视图正常发挥作用。</p>
+<h3 id="问题-ii"><a class="header" href="#问题-ii">问题 II</a></h3>
+<p>金仓数据库支持定义函数, 但 mysql 好像不支持, 我查看了金仓里的定义部分, 发现它对函数的定义是写给系统配置的, 这造成无法进行导出, 因为不知道：</p>
+<ol>
+<li>mysql 支不支持函数定义(AI 说好像没有用)？</li>
+<li>相同的定义会不会因为配置项问题导致不兼容？</li>
+<li>函数无法导出的情况下, 有没有必要进行额外设置？</li>
+</ol>
+<h3 id="问题-ii-解决方案"><a class="header" href="#问题-ii-解决方案">问题 II 解决方案</a></h3>
+<p>主要还是不熟悉 mysql 的某些内容, 看老师需求来定吧</p>
+<h3 id="问题-iii"><a class="header" href="#问题-iii">问题 III</a></h3>
+<p>疑似因为 视图 的计算存在问题的原因, 导致了 ER 图 存在问题</p>
+<h3 id="问题-iii-解决方案"><a class="header" href="#问题-iii-解决方案">问题 III 解决方案</a></h3>
+<p>我在附上了金仓数据库里面的 ER 图</p>
+<h2 id="强调项-3"><a class="header" href="#强调项-3">强调项</a></h2>
+<blockquote>
+<p>注意导入时，要<strong>先选择连接</strong>，再执行 <code>DDL_my.sql</code>，mysql 将对数据库的操作视为事务，并且 <code>拒绝在一个数据库中新建新的数据库</code> 这种类型的操作。</p>
+</blockquote>
+<blockquote>
+<p>由于不是很会 MySQL，再加上懒且时间少，我没有做好对 视图 的适配，希望后续有大佬能够改好...</p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="q--a"><a class="header" href="#q--a">Q &amp; A</a></h1>
-<p>暂无需要特殊说明的内容</p>
+<h2 id="本节目录-5"><a class="header" href="#本节目录-5">本节目录</a></h2>
+<ul>
+<li><a href="qa.html#q--a">Q &amp; A</a>
+<ul>
+<li><a href="qa.html#%E6%9C%AC%E8%8A%82%E7%9B%AE%E5%BD%95">本节目录</a></li>
+<li><a href="qa.html#%E5%A6%82%E4%BD%95%E5%9C%A8-navicat-%E9%87%8C%E7%9C%8B-er-%E5%9B%BE">如何在 Navicat 里看 ER 图？</a></li>
+</ul>
+</li>
+</ul>
+<h2 id="如何在-navicat-里看-er-图"><a class="header" href="#如何在-navicat-里看-er-图">如何在 Navicat 里看 ER 图？</a></h2>
+<blockquote>
+<p>博客链接：
+<a href="https://www.cnblogs.com/kirin1105916774/p/11179132.html">使用 Navicat 生成 ER 关系图并导出</a></p>
+</blockquote>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="附录-a对-dmp-文件的探索"><a class="header" href="#附录-a对-dmp-文件的探索">附录 A：对 .dmp 文件的探索</a></h1>
 <p>可能有些同学发现，在课程资料包的 <code>Seamart数据集</code> 目录内，有一个名为 <code>seamart.dmp</code> 的文件。这个东西是什么呢？</p>
 <h2 id="某些定义下的-dmp"><a class="header" href="#某些定义下的-dmp">某些定义下的 .dmp</a></h2>
@@ -483,7 +665,7 @@
 <p>在官网上了解到，<code>sys_restore.exe</code> 是金仓提供的用来恢复数据库的程序，那么就使用此程序，加载 <code>seamart.dmp</code> 文件，看看是否能够成功恢复数据库。</p>
 <p>我用的命令：<code>.\sys_restore.exe -Usystem -dseamart seamart.dmp的路径</code>。</p>
 <p>经过验证，确实能够恢复部分数据，但过程中会产生大量的报错...</p>
-<h2 id="现存问题"><a class="header" href="#现存问题">现存问题</a></h2>
+<h2 id="现存问题-1"><a class="header" href="#现存问题-1">现存问题</a></h2>
 <p>恢复过程中会出现报错，不知道是不是导致了恢复失败。(应该算是失败了，毕竟虽然表和数据库的结构出来了，但数据是没有的)</p>
 <h2 id="进一步猜测"><a class="header" href="#进一步猜测">进一步猜测</a></h2>
 <p>这个是后续我的思考：</p>
