@@ -449,7 +449,7 @@
 <p>理论上来说，这样就可以把数据导入到数据库中了。</p>
 <p><strong>PS：不是说相对路径不好使，只是说绝对路径方便且不易写错。</strong></p>
 <h2 id="完成标志-3"><a class="header" href="#完成标志-3">完成标志</a></h2>
-<p>使用 <code>Navicat</code> 连接 <code>kingbase</code>，能够在其内看到 <code>seamart</code> 数据库，打开后发现其内存在 <code>sales</code> 表，如：</p>
+<p>使用 <code>Navicat</code> 连接 <code>kingbase</code>，能够在其内看到 <code>seamart</code> 数据库，打开后发现其中存在着 <code>sales</code> 表，如：</p>
 <p><img src="./imgs/data_load/finish.png" alt="" /></p>
 <h2 id="强调项-2"><a class="header" href="#强调项-2">强调项</a></h2>
 <ul>
@@ -481,9 +481,10 @@
 <p>官网查这个程序，发现它是一个用来进行数据库备份的程序，那么可以猜测，<code>seamart.dmp</code> 文件就是 <code>sys_dump.exe</code> 程序生成的数据库备份文件。</p>
 <h2 id="确认"><a class="header" href="#确认">确认</a></h2>
 <p>在官网上了解到，<code>sys_restore.exe</code> 是金仓提供的用来恢复数据库的程序，那么就使用此程序，加载 <code>seamart.dmp</code> 文件，看看是否能够成功恢复数据库。</p>
+<p>我用的命令：<code>.\sys_restore.exe -Usystem -dseamart seamart.dmp的路径</code>。</p>
 <p>经过验证，确实能够恢复部分数据，但过程中会产生大量的报错...</p>
 <h2 id="现存问题"><a class="header" href="#现存问题">现存问题</a></h2>
-<p>恢复过程中会出现大量的报错，不知道是不是导致了恢复失败。</p>
+<p>恢复过程中会出现报错，不知道是不是导致了恢复失败。(应该算是失败了，毕竟虽然表和数据库的结构出来了，但数据是没有的)</p>
 <h2 id="进一步猜测"><a class="header" href="#进一步猜测">进一步猜测</a></h2>
 <p>这个是后续我的思考：</p>
 <p>观察 <code>Server/bin</code> 的内容，发现有一个 <code>sys_dumpall.exe</code> 的东西，猜测这个程序应该也是用来生成 <code>.dmp</code> 文件的。那么这就让人意识到一个问题，<code>sys_dump.exe</code> 和 <code>sys_dumpall.exe</code> 生成的 <code>.dmp</code> 文件，可能是不一样的。</p>
@@ -496,6 +497,24 @@
 <li>如果说该问题成立，那么可能是 <code>在导出数据时</code>，使用的程序问题，导致的恢复过程中一大堆报错。这个问题可能不是我们得到资料包的人能够解决的</li>
 <li>如果该问题不成立，那么可能还是 <code>在导入数据时</code>，使用的程序问题，导致的恢复过程中一大堆报错。那么就说明可能是我的操作方法不对，但是懒得验证了，毕竟验证一次挺麻烦的，需要 <code>删掉数据库 -&gt; 重新导入数据(5min以上) -&gt; 观察日志继续推测 -&gt; 迭代...</code>。一套流程下来估计得快 10min 了。</li>
 </ol>
+<p>而且，还不能排除以下情况的影响：</p>
+<ul>
+<li>数据库名字是否有影响？
+<ul>
+<li>凭我的验证体验来看，应该是没有影响的，因为报错都一样。</li>
+</ul>
+</li>
+<li>数据库内的系统环境配置是否有影响？
+<ul>
+<li>这个我尝试照着一篇博客去做，但是失败了，好像还把数据库给干崩了，只能无奈重装... 博客链接找不到了，反正最下面是说让配置数据库的系统搜索路径，然后 <code>alter</code> 执行一下，但是我没有成功还把数据库干崩了(恢复到之前的环境死活回不去了...)。</li>
+</ul>
+</li>
+<li>数据库是否恢复前需要先建好表格和视图？
+<ul>
+<li>我尝试过不恢复和恢复，应该都不太行，但 <code>控制变量法</code> 验证时，变量太多且可能存在未知变量，故难以确保我验证的准确性。</li>
+</ul>
+</li>
+</ul>
 <h2 id="解决方案"><a class="header" href="#解决方案">解决方案</a></h2>
 <p>希望有其它大佬能够给出解决方案，或者给出一些猜测吧。</p>
 <p>毕竟对金仓还是很不熟的，不敢妄下断言，只能说有所猜测吧。</p>
