@@ -6,5 +6,6 @@
 - [连接数据库](./connect-db.md)
 - [数据加载](./data-load.md)
 - [数据迁移](./data-migration.md)
+- [脱离 Navicat 依赖](./navicat-free.md)
 - [Q & A](./qa.md)
 - [附录 A：对 .dmp 文件的探索](./appendix-a.md)
