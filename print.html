@@ -176,8 +176,9 @@
 <p>欢迎给本项目以及其它项目点 star</p>
 <h2 id="近期更新内容"><a class="header" href="#近期更新内容">近期更新内容</a></h2>
 <ul>
-<li>2025-03-15: 更新了 QA 章节，增加了问题："如何在 Navicat 里看 ER 图？"</li>
-<li>2025-03-20: 增加了一个新的章节，主要处理 macos 的操作适配</li>
+<li>2025-03-15: 更新了 QA 章节，增加了问题：<a href="./qa.html#%E5%A6%82%E4%BD%95%E5%9C%A8-navicat-%E9%87%8C%E7%9C%8B-er-%E5%9B%BE">"如何在 Navicat 里看 ER 图？"</a></li>
+<li>2025-03-20: 增加了一个新的章节: <a href="./navicat-free.html">"脱离 Navicat 依赖"</a>，主要处理 macos 的操作适配</li>
+<li>2025-03-20: 更新了 QA 章节，增加了问题：<a href="./qa.html#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-vscode-%E8%B0%83%E6%95%B4%E6%96%87%E4%BB%B6%E7%BC%96%E7%A0%81">"如何使用 vscode 调整文件编码？"</a></li>
 </ul>
 <h2 id="目录"><a class="header" href="#目录">目录</a></h2>
 <ul>
@@ -744,7 +745,7 @@ Query OK, 0 rows affected (0.04 sec)
 <p>看报错, 内容出现了 "\x0" 这类的字符, 有充足的理由怀疑还是字符集的问题。</p>
 <p>然后, 用 <code>vscode</code> 打开后, 将其编码格式修改为 <code>gbk</code>, 再次运行, 发现报错没了。</p>
 <blockquote>
-<p>PS: vscode 里修改编码的方法, 已放置到 <a href="./qa.html">QA 文档</a>。</p>
+<p>PS: vscode 里修改编码的方法, 已放置到 <a href="./qa.html#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-vscode-%E8%B0%83%E6%95%B4%E6%96%87%E4%BB%B6%E7%BC%96%E7%A0%81">QA 文档</a>。</p>
 </blockquote>
 <h2 id="使用补丁包"><a class="header" href="#使用补丁包">使用补丁包</a></h2>
 <p>本部分将会介绍, 拿到补丁包后, 如何使用。</p>
@@ -866,6 +867,7 @@ index b3a89ca..3b1055f 100755
 <ul>
 <li><a href="qa.html#%E6%9C%AC%E8%8A%82%E7%9B%AE%E5%BD%95">本节目录</a></li>
 <li><a href="qa.html#%E5%A6%82%E4%BD%95%E5%9C%A8-navicat-%E9%87%8C%E7%9C%8B-er-%E5%9B%BE">如何在 Navicat 里看 ER 图？</a></li>
+<li><a href="qa.html#%E5%A6%82%E4%BD%95%E4%BD%BF%E7%94%A8-vscode-%E8%B0%83%E6%95%B4%E6%96%87%E4%BB%B6%E7%BC%96%E7%A0%81">如何使用 vscode 调整文件编码？</a></li>
 </ul>
 </li>
 </ul>
@@ -874,6 +876,29 @@ index b3a89ca..3b1055f 100755
 <p>博客链接：
 <a href="https://www.cnblogs.com/kirin1105916774/p/11179132.html">使用 Navicat 生成 ER 关系图并导出</a></p>
 </blockquote>
+<h2 id="如何使用-vscode-调整文件编码"><a class="header" href="#如何使用-vscode-调整文件编码">如何使用 vscode 调整文件编码？</a></h2>
+<p>以将文档编码改为 UTF-8 为例：</p>
+<ol>
+<li>
+<p>使用 vscode 打开文件</p>
+</li>
+<li>
+<p>按下 <code>ctrl + shift + p</code> 打开命令面板
+<img src="./imgs/vscode_change_format/csp.png" alt="" /></p>
+</li>
+<li>
+<p>输入 <code>Change File Encoding</code> 选择 <code>Change File Encoding</code>
+<img src="./imgs/vscode_change_format/change.png" alt="" /></p>
+</li>
+<li>
+<p>选择 <code>Save with encoding</code>
+<img src="./imgs/vscode_change_format/save_with.png" alt="" /></p>
+</li>
+<li>
+<p>输入 <code>UTF-8</code> 选择 <code>Convert to UTF-8</code>
+<img src="./imgs/vscode_change_format/change_encoding.png" alt="" /></p>
+</li>
+</ol>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="附录-a对-dmp-文件的探索"><a class="header" href="#附录-a对-dmp-文件的探索">附录 A：对 .dmp 文件的探索</a></h1>
 <p>可能有些同学发现，在课程资料包的 <code>Seamart数据集</code> 目录内，有一个名为 <code>seamart.dmp</code> 的文件。这个东西是什么呢？</p>
 <h2 id="某些定义下的-dmp"><a class="header" href="#某些定义下的-dmp">某些定义下的 .dmp</a></h2>
