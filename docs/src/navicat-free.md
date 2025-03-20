@@ -121,7 +121,7 @@ Query OK, 0 rows affected (0.04 sec)
 
 然后, 用 `vscode` 打开后, 将其编码格式修改为 `gbk`, 再次运行, 发现报错没了。
 
-> PS: vscode 里修改编码的方法, 已放置到 [QA 文档](./qa.md)。
+> PS: vscode 里修改编码的方法, 已放置到 [QA 文档](./qa.md#如何使用-vscode-调整文件编码)。
 
 ## 使用补丁包
 
