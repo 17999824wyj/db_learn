@@ -29,6 +29,7 @@
 ## 近期更新内容
 
 - 2025-03-15: 更新了 QA 章节，增加了问题："如何在 Navicat 里看 ER 图？"
+- 2025-03-20: 增加了一个新的章节，主要处理 macos 的操作适配
 
 ## 目录
 
@@ -38,5 +39,6 @@
 - [连接数据库](./connect-db.md)
 - [数据加载](./data-load.md)
 - [数据迁移](./data-migration.md)
+- [脱离 Navicat 依赖](./navicat-free.md)
 - [Q & A](./qa.md)
 - [附录 A：对 .dmp 文件的探索](./appendix-a.md)
