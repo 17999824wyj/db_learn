@@ -676,6 +676,7 @@ shopstat 里的数据多两行
 </ul>
 </li>
 <li><a href="navicat-free.html#%E5%90%8E%E7%BB%AD%E6%80%9D%E8%80%83">后续思考</a></li>
+<li><a href="navicat-free.html#%E7%8E%B0%E5%AD%98%E9%97%AE%E9%A2%98">现存问题</a></li>
 </ul>
 </li>
 </ul>
@@ -860,6 +861,53 @@ index b3a89ca..3b1055f 100755
 <h2 id="后续思考"><a class="header" href="#后续思考">后续思考</a></h2>
 <p>既然 mysql 能够允许 gbk 编码存在, 那是不是说明, 金仓数据库的 sql 导出内容, 可以通过某些逻辑, 快速适配移植到 mysql？</p>
 <p>由于个人精力有限, 这个就交给各位大佬研究吧。</p>
+<h2 id="现存问题-1"><a class="header" href="#现存问题-1">现存问题</a></h2>
+<p>后续看了下表格内容，发现 <code>comments</code> 和 <code>customer</code> 这两张表格的数据存在异常。两张表格都是空的。</p>
+<p>为了 debug，在 mysql 内执行了下面命令：</p>
+<pre><code class="language-mysql">tee D:\mysql-log-.txt
+source all.sql
+notee
+</code></pre>
+<p>然后查看 <code>D:\mysql-log-.txt</code> 文件，发现 <code>comments</code> 和 <code>customer</code> 的数据在插入过程中会因为不满足约束的原因，导致插入失败。</p>
+<p>但问题是，为什么破坏了约束呢？</p>
+<p>为了调试，在 mysql 内直接执行一行查询：</p>
+<pre><code>mysql&gt; INSERT INTO `comments` (`goodid`, `custid`, `stars`, `remark`, `feeling`, `submtime`) VALUES ('12560557', 1, 5, '非常好希望价格更优惠！知识图谱目前介绍最全面的一本书！', '好评', '2020-04-08 09:26:00');
+ERROR 3819 (HY000): Check constraint 'comments_chk_1' is violated.
+</code></pre>
+<p>发现 <code>comments_chk_1</code> 这个约束条件被违反了。然后采取下面命令查看此约束的具体内容：</p>
+<pre><code class="language-mysql">mysql&gt; show create table comments;
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| Table    | Create Table                                        |
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+| comments | CREATE TABLE `comments` (
+  `goodid` char(12) NOT NULL,
+  `custid` int NOT NULL,
+  `stars` int DEFAULT NULL,
+  `remark` varchar(512) DEFAULT NULL,
+  `feeling` char(4) DEFAULT NULL,
+  `submtime` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`goodid`,`custid`),
+  CONSTRAINT `comments_chk_1` CHECK ((((`feeling` = _gbk'好评') and (`stars` &gt;= 4)) or ((`feeling` = _gbk'中评') and ((`stars` = 3) or (`stars` = 2))) or ((`feeling` = _gbk'差评') and (`stars` = 1))))
+) ENGINE=InnoDB DEFAULT CHARSET=gbk |
++----------+----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------+
+1 row in set (0.00 sec)
+</code></pre>
+<p>所以，可能问题出现在对 <code>_gbk('好评')</code> 和 <code>好评</code> 的匹配机制上。</p>
+<p>然后，最诡异的部分来了：依次执行下面的命令：</p>
+<pre><code class="language-mysql">mysql&gt; select hex(_gbk'好评');
++-----------------+
+| hex(_gbk'好评') |
++-----------------+
+| BAC3C6C0        |
++-----------------+
+1 row in set (0.00 sec)
+
+mysql&gt; INSERT INTO `comments` (`goodid`, `custid`, `stars`, `remark`, `feeling`, `submtime`) VALUES ('12560557', 1, 5, '非常好希望价格更优惠！知识图谱目前介绍最全面的一本书！', 0xBAC3C6C0, '2020-04-08 09:26:00');
+ERROR 3819 (HY000): Check constraint 'comments_chk_1' is violated.
+mysql&gt;
+</code></pre>
+<p>可以看到，我把 <code>_gbk('好评')</code> 的值直接插入到 <code>feeling</code> 字段中，依然违反了约束条件。这？？？？</p>
+<p>所以，我就没有办法了...这 mysql 也没有相关的调试功能，现在属于是吧，一个 <code>if (a == 1)</code> 出错了，然后我让他判断 <code>if (1 == 1)</code>，结果也出错了，这我也没办法啊...</p>
 <div style="break-before: page; page-break-before: always;"></div><h1 id="q--a"><a class="header" href="#q--a">Q &amp; A</a></h1>
 <h2 id="本节目录-6"><a class="header" href="#本节目录-6">本节目录</a></h2>
 <ul>
@@ -911,7 +959,7 @@ index b3a89ca..3b1055f 100755
 <p>在官网上了解到，<code>sys_restore.exe</code> 是金仓提供的用来恢复数据库的程序，那么就使用此程序，加载 <code>seamart.dmp</code> 文件，看看是否能够成功恢复数据库。</p>
 <p>我用的命令：<code>.\sys_restore.exe -Usystem -dseamart seamart.dmp的路径</code>。</p>
 <p>经过验证，确实能够恢复部分数据，但过程中会产生大量的报错...</p>
-<h2 id="现存问题-1"><a class="header" href="#现存问题-1">现存问题</a></h2>
+<h2 id="现存问题-2"><a class="header" href="#现存问题-2">现存问题</a></h2>
 <p>恢复过程中会出现报错，不知道是不是导致了恢复失败。(应该算是失败了，毕竟虽然表和数据库的结构出来了，但数据是没有的)</p>
 <h2 id="进一步猜测"><a class="header" href="#进一步猜测">进一步猜测</a></h2>
 <p>这个是后续我的思考：</p>
